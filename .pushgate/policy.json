@@ -1,0 +1,60 @@
+{
+  "expires": "2027-10-28T00:00:00Z",
+  "roots": {
+    "fulcio-root": {
+      "certificate": ""
+    }
+  },
+  "steps": {
+    "dagger-check": {
+      "attestations": [
+        {
+          "regopolicies": [
+            {
+              "module": "cGFja2FnZSBjb21tYW5kcnVuX3N1Y2NlZWRlZAoKcHJlZCA6PSBvYmplY3QuZ2V0KGlucHV0LCAiYXR0ZXN0YXRpb24iLCBpbnB1dCkKCmZpZWxkKHgsIGssIGQpID0gdiB7IGlzX29iamVjdCh4KTsgdiA6PSBvYmplY3QuZ2V0KHgsIGssIGQpIH0gZWxzZSA9IGQKCnJlYWRhYmxlX2V4aXQgeyBpc19udW1iZXIoZmllbGQocHJlZCwgImV4aXRjb2RlIiwgbnVsbCkpIH0KCmRlbnlbbXNnXSB7Cglub3QgcmVhZGFibGVfZXhpdAoJbXNnIDo9ICJ1bnJlYWRhYmxlIGV2aWRlbmNlOiBjb21tYW5kLXJ1biBoYXMgbm8gbnVtZXJpYyBleGl0Y29kZSIKfQoKZGVueVttc2ddIHsKCXJlYWRhYmxlX2V4aXQKCXByZWQuZXhpdGNvZGUgIT0gMAoJbXNnIDo9IHNwcmludGYoIndyYXBwZWQgY29tbWFuZCBleGl0ZWQgJXYsIG5vdCAwIiwgW3ByZWQuZXhpdGNvZGVdKQp9Cg==",
+              "name": "command-succeeded"
+            },
+            {
+              "module": "cGFja2FnZSBjb21tYW5kcnVuX3Bpbm5lZAoKcHJlZCA6PSBvYmplY3QuZ2V0KGlucHV0LCAiYXR0ZXN0YXRpb24iLCBpbnB1dCkKCmZpZWxkKHgsIGssIGQpID0gdiB7IGlzX29iamVjdCh4KTsgdiA6PSBvYmplY3QuZ2V0KHgsIGssIGQpIH0gZWxzZSA9IGQKCmV4cGVjdGVkIDo9IFsiZGFnZ2VyIiwiY2hlY2siLCItLXByb2dyZXNzIiwicmVwb3J0Il0KCnJlYWRhYmxlX2NtZCB7IGlzX2FycmF5KGZpZWxkKHByZWQsICJjbWQiLCBudWxsKSkgfQoKZGVueVttc2ddIHsKCW5vdCByZWFkYWJsZV9jbWQKCW1zZyA6PSAidW5yZWFkYWJsZSBldmlkZW5jZTogY29tbWFuZC1ydW4gaGFzIG5vIGNtZCBhcmd2Igp9CgpkZW55W21zZ10gewoJcmVhZGFibGVfY21kCglwcmVkLmNtZCAhPSBleHBlY3RlZAoJbXNnIDo9IHNwcmludGYoImNvbW1hbmQgbXVzdCBiZSAldjsgZ290ICV2IiwgW2V4cGVjdGVkLCBwcmVkLmNtZF0pCn0K",
+              "name": "command-pin"
+            },
+            {
+              "name": "dagger-report-pass",
+              "module": "cGFja2FnZSBkYWdnZXJfcmVwb3J0CgojIFJlYWRzIHRoZSByZXBvcnQgYGRhZ2dlciBjaGVjayAtLXByb2dyZXNzIHJlcG9ydGAgd3JpdGVzIHRvIHN0ZGVyciwgd2hpY2gKIyBjaWxvY2sncyBjb21tYW5kLXJ1biBhdHRlc3RvciByZWNvcmRzLiBEYWdnZXIgMS4wLjAtYmV0YS4xOSdzIEdvIG1vZHVsZQojIHdyaXRlcyBubyBKVW5pdCwgc28gdGhlIHN0b2NrIHRlc3RzLXBhc3MgcnVsZSBoYXMgbm90aGluZyB0byByZWFkLgoKcHJlZCA6PSBvYmplY3QuZ2V0KGlucHV0LCAiYXR0ZXN0YXRpb24iLCBpbnB1dCkKCnJlcG9ydCA6PSBvYmplY3QuZ2V0KHByZWQsICJzdGRlcnIiLCBudWxsKQoKZGVueVttc2ddIHsKCW5vdCBpc19zdHJpbmcocmVwb3J0KQoJbXNnIDo9ICJ1bnJlYWRhYmxlIGV2aWRlbmNlOiBjb21tYW5kLXJ1biByZWNvcmRlZCBubyBzdGRlcnIiCn0KCmRlbnlbbXNnXSB7Cglpc19zdHJpbmcocmVwb3J0KQoJbm90IGNvbnRhaW5zKHJlcG9ydCwgIj09IFRSQUNFID09ICDinJQgUEFTU0VEIikKCW1zZyA6PSAiZGFnZ2VyIHJlcG9ydCBkb2VzIG5vdCBzYXkgdGhlIHJ1biBQQVNTRUQiCn0KCmRlbnlbbXNnXSB7Cglpc19zdHJpbmcocmVwb3J0KQoJcmVnZXgubWF0Y2goYD09IENIRUNLUyA9PVteXG5dKmZhaWxlZGAsIHJlcG9ydCkKCW1zZyA6PSAiZGFnZ2VyIHJlcG9ydCBsaXN0cyBhIGZhaWxlZCBjaGVjayIKfQoKIyBBIGRhZ2dlci50b21sIHRoYXQgZmlsdGVycyB0aGUgdGVzdHMgb3V0ICh0ZXN0ID0gWyIhKioiXSkgc3RpbGwgZXhpdHMgMCwKIyBzbyByZXF1aXJlIHRoZSBHbyB0ZXN0IGNoZWNrIGl0c2VsZiB0byBhcHBlYXIgYW5kIHBhc3MuCmRlbnlbbXNnXSB7Cglpc19zdHJpbmcocmVwb3J0KQoJbm90IGdvX3Rlc3RzX3Bhc3NlZAoJbXNnIDo9ICJubyBwYXNzaW5nIGdvIHRlc3QgY2hlY2sgaW4gdGhlIGRhZ2dlciByZXBvcnQiCn0KCmdvX3Rlc3RzX3Bhc3NlZCB7CglsaW5lIDo9IHNwbGl0KHJlcG9ydCwgIlxuIilbX10KCXN0YXJ0c3dpdGgobGluZSwgIuKclCBkYWc6Ly8/Y2hlY2s9Z28vcGFja2FnZXMvdGVzdHMvdGVzdCIpCgllbmRzd2l0aChsaW5lLCAiIE9LIikKfQo="
+            }
+          ],
+          "type": "https://aflock.ai/attestations/command-run/v0.2"
+        }
+      ],
+      "functionaries": [
+        {
+          "certConstraint": {
+            "commonname": "*",
+            "dnsnames": [
+              "*"
+            ],
+            "emails": [
+              "*"
+            ],
+            "organizations": [
+              "*"
+            ],
+            "roots": [
+              "fulcio-root"
+            ],
+            "uris": [
+              "spiffe://platform.testifysec.com/tenant/bb84a7e4-9ce3-434b-a0c6-d9e6e247ec16/agent/*"
+            ]
+          },
+          "type": "root"
+        }
+      ],
+      "name": "dagger-check"
+    }
+  },
+  "timestampauthorities": {
+    "platform-tsa": {
+      "certificate": ""
+    }
+  }
+}
