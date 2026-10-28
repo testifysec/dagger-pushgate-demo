@@ -67,3 +67,9 @@ func mustParse(t *testing.T, s string) Version {
 	}
 	return v
 }
+
+func TestPatchOrdering(t *testing.T) {
+	if c := Compare(mustParse(t, "1.2.10"), mustParse(t, "1.2.9")); c != 1 {
+		t.Fatalf("Compare = %d, want 1 (numeric, not lexical)", c)
+	}
+}
