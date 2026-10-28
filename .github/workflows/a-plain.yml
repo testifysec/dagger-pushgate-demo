@@ -1,0 +1,20 @@
+# Arm A: plain GitHub Actions. setup-go, then go test. Runs on every PR, in the
+# merge queue, and on every push to main.
+name: A plain go test
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-go@44694675825211faa026b3c33043df3e48a5fa00 # v6.0.0
+        with:
+          go-version-file: go.mod
+      - run: go test -count=1 -timeout 0 ./...

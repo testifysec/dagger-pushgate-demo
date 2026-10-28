@@ -1,0 +1,74 @@
+# Arm C: Dagger plus CI/lock and Pushgate. A pushed commit that Pushgate
+# admitted already carries signed evidence that `dagger check` passed on it,
+# so the PR tier and the push to main verify that verdict instead of running
+# the suite again. The merge queue always runs the suite: the merged tree is a
+# new commit that never went through Pushgate.
+#
+# Fails closed: no signed admission policy at the base commit, no verdict, or
+# any verify error means "not admitted", and the full check runs.
+name: C pushgate verdict
+on:
+  pull_request:
+  merge_group:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+env:
+  CILOCK_VERSION: 4.6.2
+  CILOCK_SHA256: c4739ad0116a2d76af2dc66a8e2485781b626dca45b0200154f2c0ad3638d661
+  DAGGER_VERSION: 1.0.0-beta.19
+  DO_NOT_TRACK: "1"
+jobs:
+  admit:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      admitted: ${{ steps.verify.outputs.admitted }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+      - name: Install cilock
+        run: |
+          curl -fsSLo cilock.tgz "https://cilock.dev/dl/v${CILOCK_VERSION}/cilock-${CILOCK_VERSION}-linux-amd64.tar.gz"
+          echo "${CILOCK_SHA256}  cilock.tgz" | sha256sum -c -
+          mkdir -p "$HOME/.local/bin" && tar -xzf cilock.tgz -C "$HOME/.local/bin" cilock
+      - id: verify
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          # The policy comes from the base commit, so a change cannot admit itself.
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          POLICY_SIGNER: ${{ vars.ADMISSION_POLICY_SIGNER }}
+          POLICY_ISSUER: ${{ vars.ADMISSION_POLICY_ISSUER }}
+        run: |
+          set -u
+          echo "admitted=false" >> "$GITHUB_OUTPUT"
+          if ! git show "${BASE_SHA}:.pushgate/admission-policy.signed.json" > admission.json 2>/dev/null; then
+            echo "::notice::no signed admission policy at ${BASE_SHA}; running the full check"
+            exit 0
+          fi
+          if [ -z "${POLICY_SIGNER}" ] || [ -z "${POLICY_ISSUER}" ]; then
+            echo "::notice::ADMISSION_POLICY_SIGNER or ADMISSION_POLICY_ISSUER is not set; running the full check"
+            exit 0
+          fi
+          if cilock verify -p admission.json --subjects "sha1:${HEAD_SHA}" \
+              --enable-archivista --archivista-oidc --format json \
+              --policy-emails "${POLICY_SIGNER}" \
+              --policy-fulcio-oidc-issuer "${POLICY_ISSUER}"; then
+            echo "admitted=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::${HEAD_SHA} carries a passing Pushgate verdict; skipping the suite"
+          else
+            echo "::notice::no passing verdict for ${HEAD_SHA}; running the full check"
+          fi
+  check:
+    needs: admit
+    if: ${{ always() && (github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch' || needs.admit.outputs.admitted != 'true') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Install Dagger
+        run: curl -fsSL https://dl.dagger.io/dagger/install.sh | BIN_DIR=$HOME/.local/bin sh
+      - run: dagger check --progress report
