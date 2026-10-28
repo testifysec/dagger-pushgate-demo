@@ -73,3 +73,9 @@ func TestPatchOrdering(t *testing.T) {
 		t.Fatalf("Compare = %d, want 1 (numeric, not lexical)", c)
 	}
 }
+
+func TestPrereleaseBeforeRelease(t *testing.T) {
+	if c := Compare(mustParse(t, "2.0.0-rc.1"), mustParse(t, "2.0.0")); c != -1 {
+		t.Fatalf("Compare = %d, want -1", c)
+	}
+}
