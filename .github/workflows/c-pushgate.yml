@@ -39,30 +39,32 @@ jobs:
       - id: verify
         env:
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-          # The policy comes from the base commit, so a change cannot admit itself.
+          # The admission policy comes from the base commit, so a change cannot admit itself.
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
-          POLICY_SIGNER: ${{ vars.ADMISSION_POLICY_SIGNER }}
-          POLICY_ISSUER: ${{ vars.ADMISSION_POLICY_ISSUER }}
+          # The admission policy's human signer, pinned. Re-signing under another identity fails closed.
+          POLICY_SIGNER: ${{ vars.ADMISSION_POLICY_SIGNER || 'cole@testifysec.com' }}
         run: |
           set -u
           echo "admitted=false" >> "$GITHUB_OUTPUT"
-          if ! git show "${BASE_SHA}:.pushgate/admission-policy.signed.json" > admission.json 2>/dev/null; then
+          if ! git show "${BASE_SHA}:.github/pushgate/pr-admission.policy.signed.json" > admission.json 2>/dev/null; then
             echo "::notice::no signed admission policy at ${BASE_SHA}; running the full check"
             exit 0
           fi
-          if [ -z "${POLICY_SIGNER}" ] || [ -z "${POLICY_ISSUER}" ]; then
-            echo "::notice::ADMISSION_POLICY_SIGNER or ADMISSION_POLICY_ISSUER is not set; running the full check"
-            exit 0
-          fi
+          # Gate on the exit code. Never pipe verify: the pipe's status would hide a failure.
+          start=$(date +%s%N)
           if cilock verify -p admission.json --subjects "sha1:${HEAD_SHA}" \
-              --enable-archivista --archivista-oidc --format json \
               --policy-emails "${POLICY_SIGNER}" \
-              --policy-fulcio-oidc-issuer "${POLICY_ISSUER}"; then
-            echo "admitted=true" >> "$GITHUB_OUTPUT"
-            echo "::notice::${HEAD_SHA} carries a passing Pushgate verdict; skipping the suite"
+              --policy-fulcio-oidc-issuer https://platform.testifysec.com/fulcio/oidc \
+              --enable-archivista --archivista-oidc --format json > verdict.json 2> verify.err; then
+            if [ "$(jq -r '.passed' verdict.json)" = "true" ]; then
+              echo "admitted=true" >> "$GITHUB_OUTPUT"
+              echo "::notice::${HEAD_SHA} carries a PASSED Pushgate verdict for dagger-check; skipping the suite"
+            fi
           else
+            cat verify.err
             echo "::notice::no passing verdict for ${HEAD_SHA}; running the full check"
           fi
+          echo "verify took $(( ($(date +%s%N) - start) / 1000000 )) ms"
   check:
     needs: admit
     if: ${{ always() && (github.event_name == 'merge_group' || github.event_name == 'workflow_dispatch' || needs.admit.outputs.admitted != 'true') }}
