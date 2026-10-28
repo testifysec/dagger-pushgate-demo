@@ -1,0 +1,9 @@
+dag+check://?check=go/packages/generate/stale&go-package=cmd/semver
+dag+check://?check=go/packages/generate/stale&go-package=semver
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestBuildMetadataIgnored
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestMajorDominates
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestNumericBeforeAlphanumeric
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestParse
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestParseRejects
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestSpecOrdering
+dag+check://?check=go/packages/tests/test&go-package=semver&go-test=TestSuiteLoad
